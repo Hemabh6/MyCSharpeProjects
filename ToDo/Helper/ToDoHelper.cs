@@ -11,7 +11,7 @@ namespace ToDo.Helper
 {
     public class ToDoHelper
     {
-        private string filetoread = "C:\\Users\\iy970f\\Documents\\C#\\mylearning\\C#\\ToDo\\toDoTask.txt.txt";
+        private string filetoread = "C:\\Users\\{{Your PC Name}}\\Documents\\C#\\mylearning\\C#\\ToDo\\toDoTask.txt.txt";
 
         public List<ToDoModel> LoadToDos()
         {
