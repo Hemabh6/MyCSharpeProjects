@@ -15,8 +15,8 @@ class Program
             Console.WriteLine("1. Add To-Do");
             Console.WriteLine("2. Edit To-Do");
             Console.WriteLine("3. Delete To-Do");
-            Console.WriteLine("4. Mark as Complete");
-            Console.WriteLine("5. View All To-Dos");
+            Console.WriteLine("4. Mark the task status");
+            Console.WriteLine("5. View To-Dos");
             Console.WriteLine("6. Delete All");
             Console.WriteLine("7. Exit");
 
@@ -31,7 +31,7 @@ class Program
                     {
                         id = helper.LoadToDos().Count > 0 ? helper.LoadToDos().Max(tc => tc.id) + 1 : 1,
                         Description = description,
-                        status = "Incomplete",
+                        status = "In Progress",
                         createdAt = DateTime.Now,
                         updateAt = DateTime.Now
                     };
@@ -46,7 +46,7 @@ class Program
                     {
                         id = helper.LoadToDos().Count > 0 ? helper.LoadToDos().Max(tc => tc.id) + 1 : 1,
                         Description = newDescription,
-                        status = "Incomplete",
+                        status = "Not Done",
                         createdAt = DateTime.Now,
                         updateAt = DateTime.Now
                     };
@@ -60,10 +60,14 @@ class Program
                 case "4":
                     Console.WriteLine("Enter the ID of the to-do you want to mark as complete:");
                     int completeId = int.Parse(Console.ReadLine());
-                    controller.MarkAsComplete(completeId);
+                    Console.WriteLine("Select a) Done b) Not Done c) In Progress. Enter a,b,c to execute the task.");
+                    string statusTag = Console.ReadLine();
+                    controller.MarkTaskStatus(completeId,statusTag);
                     break;
                 case "5":
-                    controller.ViewTodos();
+                    Console.WriteLine("Select option to view tasks. a).Done b).Not Done c).In Progress d). View All tasks.");
+                    string taskSelected = Console.ReadLine();
+                    controller.ListDoneTasks(taskSelected);
                     break;
                 case "6":
                     controller.DeleteAll();

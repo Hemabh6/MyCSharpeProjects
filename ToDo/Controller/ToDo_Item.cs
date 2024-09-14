@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace ToDo.Controller
             {
                 id = newId,
                 Description = description.Description,
-                status = description.status,
+                status = "Not Done",
                 createdAt = DateTime.Now
             };
 
@@ -31,6 +32,7 @@ namespace ToDo.Controller
 
         public void EditList(int id, ToDoModel description)
         {
+            ViewTodos();
             List<ToDoModel> toDoModels = helper.LoadToDos();
             ToDoModel item = toDoModels.FirstOrDefault(t => t.id == id);
             if (item == null)
@@ -50,6 +52,7 @@ namespace ToDo.Controller
         }
         public void DeleteList(int id)
         {
+            ViewTodos();
             List<ToDoModel> toDoList = helper.LoadToDos();
             ToDoModel listId = toDoList.FirstOrDefault(t => t.id == id);
             if(listId == null)
@@ -64,21 +67,88 @@ namespace ToDo.Controller
             Console.WriteLine("Removed Successfully");
         }
 
-        public void MarkAsComplete(int id)
+        public void MarkTaskStatus(int id, string statusTag)
         {
+            ViewTodos();
             List<ToDoModel> toDoModels = helper.LoadToDos();
-            ToDoModel itemList = toDoModels.FirstOrDefault(t => t.id==id);
+            ToDoModel itemList = toDoModels.FirstOrDefault(t => t.id == id);
             if (itemList == null)
             {
                 Console.WriteLine("No item found");
             }
+            else if (statusTag == "a")
+            {
+                itemList.status = "Done";
+                itemList.updateAt = DateTime.Now;
+            }
+            else if(statusTag == "b")
+            {
+                itemList.status = "Not Done";
+                itemList.updateAt = DateTime.Now;
+            }else if(statusTag == "c")
+            {
+                itemList.status = "In Progress";
+                itemList.updateAt = DateTime.Now;
+            }
             else
             {
-                itemList.status = "Complete";
+                Console.WriteLine("Enter a valid option.");
             }
             toDoModels.Add(itemList);
             helper.save(toDoModels);
             Console.WriteLine("Successfully Completed");
+        }
+
+        public void ListDoneTasks(string taskStatus)
+        {
+            ViewTodos();
+            List<ToDoModel> doneList = helper.LoadToDos();
+            List<ToDoModel> listAllDone = doneList.Where(t => t.status == "Done").ToList();
+            List<ToDoModel> listAllNotDone = doneList.Where(t => t.status == "Not Done").ToList();
+            List<ToDoModel> listAllInProgress = doneList.Where(t => t.status == "In Progress").ToList();
+            if (listAllDone == null)
+            {
+                Console.WriteLine("no task found");
+            }
+            else if(taskStatus == "a")
+            {
+                if (listAllDone.Any()) { 
+                    foreach (ToDoModel item in doneList)
+                    {
+                        Console.WriteLine($"{item.id}:{item.Description}:{item.updateAt}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No 'Done' task found");
+                }
+            }
+            else if(taskStatus == "b")
+            {
+                if (listAllNotDone.Any()) { 
+                    foreach (ToDoModel item in listAllNotDone)
+                    {
+                        Console.WriteLine($"{item.id}:{item.Description}:{item.updateAt}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No task found with 'Not Done' status");
+                }
+
+            }else if(taskStatus == "c") {
+                foreach (ToDoModel item in listAllInProgress)
+                {
+                    Console.WriteLine($"{item.id}:{item.Description}:{item.updateAt}");
+                }
+            }
+            else if (taskStatus == "d")
+            {
+                ViewTodos();
+            }else
+            {
+                Console.WriteLine("Select valid option among a, b and c");
+            }
         }
 
         public void ViewTodos()
